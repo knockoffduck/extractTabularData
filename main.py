@@ -20,6 +20,8 @@ try:
 except ImportError:
     import Image
 
+import urllib.request
+
 import pytesseract
 
 
@@ -29,8 +31,15 @@ def progress_bar(progress, total):
     print(f"\r|{bar}| {percent:.2f}%", end="\r")
 
 
-def extractData(file):
-    # read your file
+def downloadFile(url):
+    filename = "./Downloads/Roster.jpg"
+    # calling urlretrieve function to get resource
+    urllib.request.urlretrieve(url, filename)
+    return filename
+
+
+def extractData(url):
+    file = downloadFile(url)
     img = cv2.imread(file.strip(), 0)
     print("File Opened")
     print("Extracting Data")
@@ -235,7 +244,7 @@ def cleanData(dataframe):
 
     myTimetable = 0
     print("Timetable Result")
-    printTable(new[2:], dictHeaders)
+    # printTable(new[2:], dictHeaders)
     for i in new:
         if "Daffa" in i[0]:
             myTimetable = [dictHeaders, i]
@@ -298,7 +307,7 @@ def main():
     myShifts = cleanData(dataframe)
     StartingShifts = myShifts[0::2]
     EndingShifts = myShifts[1::2]
-    print(myShifts)
+    # print(myShifts)
     x = input(f"Is the Following Correct? y/n\n")
     try:
         if x == "y":
@@ -315,7 +324,7 @@ def main():
                 addEvent(creds, start, end)
     except:
         print("EXIT_FAILURE")
-    return
+    return myShifts
 
 
 main()
